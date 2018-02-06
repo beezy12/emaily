@@ -1,7 +1,13 @@
 const express = require('express');
+const mongoose = require('mongoose');
+const keys = require('./config/keys');
+
+require('./models/User');
 // don't need to assign passport to a variable because we are not pulling any code out of the passport file, just executing it
 require('./services/passport');
 
+
+mongoose.connect(keys.mongoURI);
 
 const app = express();
 

@@ -5,7 +5,7 @@ const passport = require('passport');
 // app object this way
 module.exports = app => {
     // not explained well by Passport, but the 'google' string here references the GoogleStrategy under the hood
-    // so when you passport.auth with 'google', it is using the strategy above
+    // so when you use passport.auth with 'google', it is using the strategy in the passport.js file
     app.get(
         '/auth/google',
         passport.authenticate('google', {
@@ -13,7 +13,6 @@ module.exports = app => {
         })
     );
 
-    // so this is the route handler from our strategy above, after the user has granted permission...this gets the user's code from
-    // google and confirms yet again with google. passport does all this for us.
+    // so this is the route handler from the strategy in passport.js, after the user has granted permission...this gets the user's code from google and confirms yet again with google. passport does all this for us.
     app.get('/auth/google/callback', passport.authenticate('google'));
 };
