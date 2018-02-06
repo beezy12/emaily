@@ -9,11 +9,20 @@ const User = mongoose.model('users');
 
 passport.use(
     new GoogleStrategy({
-        clientID: keys.googleClientID,
-        clientSecret: keys.googleClientSecret,
-        callbackURL: '/auth/google/callback'
-    },
-    (accessToken, refreshToken, profile, done) => {
-        new User({ googleId: profile.id }).save();
-    })
+            clientID: keys.googleClientID,
+            clientSecret: keys.googleClientSecret,
+            callbackURL: '/auth/google/callback'
+        },
+        (accessToken, refreshToken, profile, done) => {
+            User.findOne({ googleId: profile.id }) // checks to see if user record already exists first. this is async
+                .then((existingUser) => {
+                    if (existingUser) {
+                        // we already have a record with the given profile ID
+                    } else {
+                        // we don't have a user record with this ID, make a new record
+                        new User({ googleId: profile.id }).save();
+                    }
+                })
+        }
+    )
 );
