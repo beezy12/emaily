@@ -15,4 +15,15 @@ module.exports = app => {
 
     // so this is the route handler from the strategy in passport.js, after the user has granted permission...this gets the user's code from google and confirms yet again with google. passport does all this for us.
     app.get('/auth/google/callback', passport.authenticate('google'));
+
+    // *** Passport auto attaches the logout function to the req object. logout kills the cookie
+    app.get('/api/logout', (req, res) => {
+        req.logout();
+        res.send(req.user);
+    });
+
+    // *** Passport automatically attaches the user property to the req object
+    app.get('/api/currentUser', (req, res) => {
+        res.send(req.user);
+    });
 };
