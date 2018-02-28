@@ -31,8 +31,7 @@ passport.use(
     new GoogleStrategy({
             clientID: keys.googleClientID,
             clientSecret: keys.googleClientSecret,
-            callbackURL: '/auth/google/callback',
-            proxy: true
+            callbackURL: '/auth/google/callback'
         },
         (accessToken, refreshToken, profile, done) => {
             User.findOne({ googleId: profile.id }) // checks to see if user record already exists first. this is async
@@ -50,3 +49,16 @@ passport.use(
         }
     )
 );
+
+
+/*
+// *** put async in front of the function that will contain some asyncronous code
+// *** put await in front of anything that creates a promise
+const fetchAlbums = async () => {
+    const res = await fetch('https://rallycoding.herokuapp.com/api/music_albums')
+    const json = await res.json();
+        console.log(json);
+}
+
+fetchAlbums();
+*/
