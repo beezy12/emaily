@@ -12,38 +12,38 @@ const User = mongoose.model('users');
 // user.id is different from the googleId....it is actually the _id that mongo assigned in the db at mlab.
 // we only use the profile.id to sign in, and then we don't care about it anymore. after a user has signed in, we only care about our own Id, which is the mongo db Id.
 passport.serializeUser((user, done) => {
-    done(null, user.id)
+  done(null, user.id)
 });
 
 // the point of deserialize is to take the Id that we stuffed in the cookie, and turn it back into a user model.
 // ex: user requests a list from the db. we check the Id from the user, and give them what they want
 // first argument is what we stuffed in the cookie earlier...the user.id from the mongo db. second argument is the done function
 passport.deserializeUser((id, done) => {
-    User.findById(id)
-        .then(user => {
-            done(null, user);
-        });
+  User.findById(id)
+    .then(user => {
+      done(null, user);
+    });
 });
 
 
 
 passport.use(
-    new GoogleStrategy({
-            clientID: keys.googleClientID,
-            clientSecret: keys.googleClientSecret,
-            callbackURL: '/auth/google/callback'
-        },
-        async (accessToken, refreshToken, profile, done) => {
-            const existingUser = await User.findOne({ googleId: profile.id }); // checks to see if user record already exists first. this is async
+  new GoogleStrategy({
+      clientID: keys.googleClientID,
+      clientSecret: keys.googleClientSecret,
+      callbackURL: '/auth/google/callback'
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const existingUser = await User.findOne({ googleId: profile.id }); // checks to see if user record already exists first. this is async
 
-            if (existingUser) {
-                return done(null, existingUser);
-            }
+      if (existingUser) {
+        return done(null, existingUser);
+      }
 
-            const user = await new User({ googleId: profile.id }).save();
-            done(null, user);
-        }
-    )
+      const user = await new User({ googleId: profile.id }).save();
+      done(null, user);
+    }
+  )
 );
 
 

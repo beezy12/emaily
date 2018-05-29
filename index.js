@@ -14,10 +14,10 @@ const app = express();
 
 // we also have to tell Passport to handle our authentication by using cookies to keep track of the currently signed in user
 app.use(
-    cookieSession({
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        keys: [keys.cookieKey]
-    })
+  cookieSession({
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+    keys: [keys.cookieKey]
+  })
 );
 
 app.use(passport.initialize());

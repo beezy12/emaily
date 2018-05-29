@@ -5,7 +5,7 @@ const { Schema } = mongoose;
 
 // schema
 const userSchema = new Schema ({
-    googleId: String
+  googleId: String
 });
 
 // making a model class, telling mongoose that this new collection has been created....THIS LOADS THE SCHEMA INTO MONGOOSE, so therefore I won't have to require it everywhere...which would caues problems because mongoose would think you are creating a new 'users' collection everywhere that it's required.
