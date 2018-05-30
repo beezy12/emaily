@@ -4,14 +4,17 @@ const keys = require('../config/keys');
 const stripe = require('stripe')(keys.stripeSecretKey);
 
 
+// this sends our request to the stripe api. returns a promise, so I use async / await
 module.exports = app => {
-  app.post('/api/stripe', (req, res) => {
-    console.log(req.body);
-    stripe.charges.create({
+  app.post('/api/stripe', async (req, res) => {
+    //console.log(req.body);
+    const charge = await stripe.charges.create({
       amount: 500,
       currency: 'usd',
       description: '5 dollars for 5 credits',
       source: req.body.id
-    })
+    });
+
+    console.log(charge);
   });
 };
