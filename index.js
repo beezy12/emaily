@@ -15,8 +15,7 @@ const app = express();
 
 
 /*
-MIDDLEWARES
-middlewares use app.use
+MIDDLEWARES - use app.use
 */
 
 //express doesn't parse the request automatically, need bodyParser to create the req.body object
