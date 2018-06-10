@@ -38,6 +38,25 @@ require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
 
 
+//*** Handling routing in production (in preparation for deploying to heroku):
+// this part says: if we don't have a matching route handler above for what the request is looking for, AND
+// there's no file inside of our client/build directory that matches what this request is looking for.....
+// then just serve up the index.html file
+if (process.env.NODE_ENV === 'production') {
+  // Express will serve up production assets, like main.js or main.css.
+  // this is saying: if we don't have an express route handler set up for this, then look in the client/build
+  // directory and try to see if there's a file in there that matches what the request is looking for
+  app.use(express.static('client/build'));
+
+  // Express will serve up the index.html file if it doesn't recognize the route.
+  // basically kicks the user over the
+  const path = require('path');
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
+}
+
+
 // Heroku determines what port we will use
 const PORT = process.env.PORT || 5000;
 app.listen(PORT);
