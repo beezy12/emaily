@@ -5,6 +5,7 @@ const cookieSession = require('cookie-session');
 const passport = require('passport');
 const bodyParser = require('body-parser');
 require('./models/User');
+require('./models/Survey');
 // don't need to assign passport to a variable because we are not pulling any code out of the passport file, just executing it
 require('./services/passport');
 
@@ -36,6 +37,7 @@ app.use(passport.session());
 // authRoutes returns a function, so what this is doing is immediately calling that function and passing app to it.
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+
 
 
 //*** Handling routing in production (in preparation for deploying to heroku):
