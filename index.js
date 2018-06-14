@@ -35,8 +35,10 @@ app.use(passport.session());
 
 // this require was assigned to a variable, but the variable is not needed. this is a way of writing it.
 // authRoutes returns a function, so what this is doing is immediately calling that function and passing app to it.
+// calling the route function and passing it the app object
 require('./routes/authRoutes')(app);
 require('./routes/billingRoutes')(app);
+require('./routes/surveyRoutes')(app);
 
 
 
