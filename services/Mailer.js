@@ -10,7 +10,40 @@ class Mailer extends helper.Mail {
     this.subject = subject;
     this.body = new helper.Content('text/html', content);
     this.recipients = this.formatAddresses(recipients);
+
+    // these helper functions addContent and addRecipients come from the Mail base class
+    this.addContent(this.body);
+    this.addClickTracking();
+    this.addRecipients();
   }
-};
+
+  // have to have the extra set of parentheses to do destructuring with an arrow function
+  // turns this.recipients into an array of these helper Email objects
+  formatAddresses(recipients) {
+    return recipients.map(({ email }) => {
+      return new helper.Email(email);
+    });
+  }
+
+  addClickTracking() {
+    const trackingSettings = new helper.TrackingSettings();
+    const clickTracking = new helper.ClickTracking(true, true);
+
+    trackingSettings.setClickTracking(clickTracking);
+    this.addTrackingSettings(trackingSettings);
+  }
+
+  // take each recipient (this.recipients) and add them to the 'personalize' object, and
+  // after they've all been added, call this.addPersonalization, which is a function defined by the
+  // Mail base class, and add the entire 'personalize' object
+  addRecipients() {
+    const personalize = new helper.Personalization();
+    this.recipients.forEach(recipient => {
+      personalize.addTo(recipient);
+    });
+    this.addPersonalization(personalize);
+  }
+
+}
 
 module.exports = Mailer;
