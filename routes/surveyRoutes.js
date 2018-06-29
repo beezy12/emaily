@@ -19,9 +19,21 @@ module.exports = app => {
       dateSent: Date.now()
     });
 
-    // great place to send an email
+    // send an email off to the Sengrid api by calling the send function on the Mailer parent class, and then after the async send finishes,
+    // save to db. whenever you call save on req.user, that user is now 'stale', so have to create a new user variable
     const mailer = new Mailer(survey, surveyTemplate(survey));
-    await mailer.send();
+
+    try {
+      await mailer.send();
+      await survey.save();
+      req.user.credits -= 1;
+      const user = await req.user.save();
+
+      // send back the updated user
+      res.send(user);
+    } catch (err) {
+      res.status(422).send(err);
+    }
   });
 };
 
