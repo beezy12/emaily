@@ -9,7 +9,7 @@ const FIELDS = [
   { label: "Survey Title", name: "title" },
   { label: "Subject Line", name: "subject" },
   { label: "Email Body", name: "body" },
-  { label: "Recipient List", name: "emails"}
+  { label: "Recipient List", name: "list of emails"}
 ];
 
 // handleSubmit is a built-in function of redux-form
@@ -51,9 +51,24 @@ class SurveyForm extends Component {
 function validate(values) {
   const errors = {};
 
-  if (!values.title) {
-    errors.title = 'you must provide a title';
-  }
+  FIELDS.forEach(({ name }) => {
+    if (!values[name]) {
+      errors[name] = `you must provide a ${name}`;
+    }
+  });
+  //
+  // if (!values.title) {
+  //   errors.title = 'you must provide a title';
+  // }
+  // if (!errors.subject) {
+  //   errors.subject = 'you must provide a subject';
+  // }
+  // if (!errors.body) {
+  //   errors.body = 'you must provide an email body';
+  // }
+  // if (!errors.emails) {
+  //   errors.emails = 'you must provide a list of emails';
+  // }
 
   return errors;
 }
