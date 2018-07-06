@@ -40,7 +40,6 @@ class SurveyForm extends Component {
             Next
             <i className="material-icons right">done</i>
           </button>
-
         </form>
       </div>
     );
@@ -48,6 +47,18 @@ class SurveyForm extends Component {
 }
 
 
+// this function auto runs on page load
+function validate(values) {
+  const errors = {};
+
+  if (!values.title) {
+    errors.title = 'you must provide a title';
+  }
+
+  return errors;
+}
+
 export default reduxForm({
+  validate: validate,
   form: 'surveyForm'
 })(SurveyForm);
