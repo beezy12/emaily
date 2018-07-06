@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 import SurveyField from './SurveyField';
+import validateEmails from '../../utils/validateEmails';
 //import _ from 'lodash';
 
 
@@ -9,7 +10,7 @@ const FIELDS = [
   { label: "Survey Title", name: "title" },
   { label: "Subject Line", name: "subject" },
   { label: "Email Body", name: "body" },
-  { label: "Recipient List", name: "list of emails"}
+  { label: "Recipient List", name: "emails"}
 ];
 
 // handleSubmit is a built-in function of redux-form
@@ -51,24 +52,19 @@ class SurveyForm extends Component {
 function validate(values) {
   const errors = {};
 
+
+  // 'error.emails' here comes from the name of emails in the FIELDS array above.
+  // passing empty string here because this validateEmails function runs on page load, and was undefined
+  // since the user hasn't made any errors yet
+  errors.emails = validateEmails(values.emails || '');
+
+
   FIELDS.forEach(({ name }) => {
     if (!values[name]) {
       errors[name] = `you must provide a ${name}`;
     }
   });
-  //
-  // if (!values.title) {
-  //   errors.title = 'you must provide a title';
-  // }
-  // if (!errors.subject) {
-  //   errors.subject = 'you must provide a subject';
-  // }
-  // if (!errors.body) {
-  //   errors.body = 'you must provide an email body';
-  // }
-  // if (!errors.emails) {
-  //   errors.emails = 'you must provide a list of emails';
-  // }
+
 
   return errors;
 }
