@@ -9,7 +9,9 @@ const requireLogin = require('../middlewares/requireLogin');
 // functions has to process the request and send back a request to the user.
 module.exports = app => {
   app.post('/api/stripe', requireLogin, async (req, res) => {
+    // this will show in the terminal
     //console.log(req.body);
+
     const charge = await stripe.charges.create({
       amount: 500,
       currency: 'usd',
