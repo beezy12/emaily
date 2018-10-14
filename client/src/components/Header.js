@@ -48,6 +48,7 @@ function mapStateToProps(state) {
 }
 */
 
+// this is how you pass the values from redux into this component in the form of props
 // using ES6 destructuring
 function mapStateToProps({ auth }) {
   return { auth };

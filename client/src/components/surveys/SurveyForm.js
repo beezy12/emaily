@@ -3,15 +3,9 @@ import { reduxForm, Field } from 'redux-form';
 import { Link } from 'react-router-dom';
 import SurveyField from './SurveyField';
 import validateEmails from '../../utils/validateEmails';
+import formFields from './formFields';
 //import _ from 'lodash';
 
-
-const FIELDS = [
-  { label: "Survey Title", name: "title" },
-  { label: "Subject Line", name: "subject" },
-  { label: "Email Body", name: "body" },
-  { label: "Recipient List", name: "emails"}
-];
 
 // handleSubmit is a built-in function of redux-form
 // name property on Field is the key that will be store in the redux object
@@ -26,7 +20,7 @@ class SurveyForm extends Component {
 
   // label,name here used to be field, and I used field.name and field.label. but with es6 destructuring, you can just pull the label and name off of FIELDS array
   renderFields() {
-    return FIELDS.map(({ label, name }) => <Field key={name} component={SurveyField} type="text" label={label} name={name} />
+    return formFields.map(({ label, name }) => <Field key={name} component={SurveyField} type="text" label={label} name={name} />
   )};
 
   render() {
@@ -59,7 +53,7 @@ function validate(values) {
   errors.emails = validateEmails(values.emails || '');
 
 
-  FIELDS.forEach(({ name }) => {
+  formFields.forEach(({ name }) => {
     if (!values[name]) {
       errors[name] = `you must provide a ${name}`;
     }
@@ -70,6 +64,7 @@ function validate(values) {
 }
 
 export default reduxForm({
-  validate: validate,
-  form: 'surveyForm'
+  validate,
+  form: 'surveyForm',
+  destroyOnUnmount: false
 })(SurveyForm);
