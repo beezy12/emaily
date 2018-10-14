@@ -1,30 +1,25 @@
 // this component shows the user's form for review, either submit or cancel to go back
 import React from 'react';
 import { connect } from 'react-redux';
+import formFields from './formFields';
 
 // destructuring and pulling just the onCancel function off of props
 const SurveyFormReview = ({ onCancel, formValues }) => {
+
+  // you could use es6 destructuring here and just pull name and label off of the 'field' object
+  const reviewFields = formFields.map(field => {
+    return (
+      <div key={field.name}>
+        <label>{field.label}</label>
+        <div>{formValues[field.name]}</div>
+      </div>
+    );
+  });
+
   return (
     <div>
       <h5>Please confirm your entries</h5>
-      <div>
-        <div>
-          <label>Survey Title</label>
-          <div>{formValues.title}</div>
-        </div>
-        <div>
-          <label>Subject Line</label>
-          <div>{formValues.subject}</div>
-        </div>
-        <div>
-          <label>Email Body</label>
-          <div>{formValues.body}</div>
-        </div>
-        <div>
-          <label>Recipient List</label>
-          <div>{formValues.emails}</div>
-        </div>
-      </div>
+      {reviewFields}
       <button className="yellow darken-3 btn-flat" onClick={onCancel} >
         Cancel
       </button>
