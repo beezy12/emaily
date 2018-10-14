@@ -1,5 +1,7 @@
 // SurveyNew is the parent component for both SurveyForm and SurveyFormReview
+// it determines which view I show
 import React, { Component } from 'react';
+import { reduxForm } from 'redux-form';
 import SurveyForm from './SurveyForm';
 import SurveyFormReview from './SurveyFormReview';
 
@@ -32,4 +34,9 @@ class SurveyNew extends Component {
   }
 }
 
-export default SurveyNew;
+// by adding this reduxForm, it clears out the form values when going back to the new survey page.
+// by default, all the values get dumped. in the surveyForm file I had to set a flag to NOT destroy the values,
+// but not here, by default
+export default reduxForm({
+  form: 'surveyForm'
+})(SurveyNew);
