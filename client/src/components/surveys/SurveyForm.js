@@ -45,13 +45,10 @@ class SurveyForm extends Component {
 // this function auto runs on page load
 function validate(values) {
   const errors = {};
-
-
   // 'error.emails' here comes from the name of emails in the FIELDS array above.
   // passing empty string here because this validateEmails function runs on page load, and was undefined
   // since the user hasn't made any errors yet
-  errors.emails = validateEmails(values.emails || '');
-
+  errors.recipients = validateEmails(values.recipients || '');
 
   formFields.forEach(({ name }) => {
     if (!values[name]) {
@@ -59,9 +56,9 @@ function validate(values) {
     }
   });
 
-
   return errors;
 }
+
 
 export default reduxForm({
   validate,
