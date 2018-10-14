@@ -2,11 +2,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import formFields from './formFields';
+import { withRouter } from 'react-router-dom';
 import * as actions from '../../actions';
 
 // destructuring and pulling just the onCancel function off of props
 // submitSurvey is an action creator that I imported in as a prop
-const SurveyFormReview = ({ onCancel, formValues, submitSurvey }) => {
+const SurveyFormReview = ({ onCancel, formValues, submitSurvey, history }) => {
 
   // you could use es6 destructuring here and just pull name and label off of the 'field' object
   const reviewFields = formFields.map(field => {
@@ -28,8 +29,9 @@ const SurveyFormReview = ({ onCancel, formValues, submitSurvey }) => {
 
       {/* this 'submitSurvey' is my redux action in the actions/index.js file. it's imported with actions*/}
       {/*had to wrap it in an arrow function, otherwise it would be executed right away*/}
+      {/* history here is an object that's passed in with reactRouter's withRouter at the bottom of this file*/}
       <button
-        onClick={() => submitSurvey(formValues)}
+        onClick={() => submitSurvey(formValues, history)}
         className="green btn-flat right white-text"
       >
         Send Survey
@@ -51,4 +53,6 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, actions)(SurveyFormReview);
+// check out React Router docs to see how this withRouter works, but basicially this allows us to use
+// redirects from React Router as we need throughout my application, using the 'history' object
+export default connect(mapStateToProps, actions)(withRouter(SurveyFormReview));
