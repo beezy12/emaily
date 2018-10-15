@@ -16,30 +16,28 @@ module.exports = app => {
 
   app.post('/api/surveys/webhooks', (req, res) => {
     //console.log(req.body);
+    const p = new Path('/api/surveys/:surveyId/:choice');
 
     // could do some es6 destructuring right here on 'event'. since we only need the 'email' and 'url' properties,
     // I could just pull those off the 'event' object. but I won't yet for readibility
-    const events = req.body.map(event => {
-      const pathname = new URL(event.url).pathname;
-      const p = new Path('/api/surveys/:surveyId/:choice');
-      //console.log(p.test(pathname));
-      // this p.test(pathname) will return records that match both the wildcards above, surveyId and choice,
-      // otherwise it will return NULL
-      const match = p.test(pathname);
-      // so if match here does exist, that means it MUST have the surveyId and the choice
-      if (match) {
-        return { email: event.email, surveyId: match.surveyId, choice: match.choice };
-      }
-    });
-
-    //console.log(events);
+    //console.log(p.test(pathname));
+    // this p.test(new URL(event.url).pathname) will return records that match both the wildcards above, surveyId and choice,
+    // otherwise it will return NULL
+    // so if match here does exist, that means it MUST have the surveyId and the choice
     // vid:180 I need to remove undefined elements. this 'compact' underscore does that
-    const compactEvents = _.compact(events);
+    // I need to remove duplicate votes. uniqby removes votes that have a dup email or surveyId
+    const events = _.chain(req.body)
+      .map(event => {
+        const match = p.test(new URL(event.url).pathname);
+        if (match) {
+          return { email: event.email, surveyId: match.surveyId, choice: match.choice };
+        }
+      })
+      .compact()
+      .uniqBy('email', 'surveyId')
+      .value() // .value is mandatory, to return the final array from your chain
 
-    // I need to remove duplicate votes. this removes votes that have a dup email or surveyId
-    const uniqueEvents = _.uniqBy(compactEvents, 'email', 'surveyId');
-
-    console.log(uniqueEvents);
+    console.log(events);
     // sendgrid thinks the requests are failing and will keep outputting in the terminal, until you send a  response
     res.send({});
 
