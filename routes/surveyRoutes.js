@@ -17,11 +17,33 @@ module.exports = app => {
   app.post('/api/surveys/webhooks', (req, res) => {
     //console.log(req.body);
 
+    // could do some es6 destructuring right here on 'event'. since we only need the 'email' and 'url' properties,
+    // I could just pull those off the 'event' object. but I won't yet for readibility
     const events = req.body.map(event => {
       const pathname = new URL(event.url).pathname;
       const p = new Path('/api/surveys/:surveyId/:choice');
-      console.log(p.test(pathname));
+      //console.log(p.test(pathname));
+      // this p.test(pathname) will return records that match both the wildcards above, surveyId and choice,
+      // otherwise it will return NULL
+      const match = p.test(pathname);
+      // so if match here does exist, that means it MUST have the surveyId and the choice
+      if (match) {
+        return { email: event.email, surveyId: match.surveyId, choice: match.choice };
+      }
     });
+
+    //console.log(events);
+    // vid:180 I need to remove undefined elements. this 'compact' underscore does that
+    const compactEvents = _.compact(events);
+
+    // I need to remove duplicate votes. this removes votes that have a dup email or surveyId
+    const uniqueEvents = _.uniqBy(compactEvents, 'email', 'surveyId');
+
+    console.log(uniqueEvents);
+    // sendgrid thinks the requests are failing and will keep outputting in the terminal, until you send a  response
+    res.send({});
+
+
 
   });
 
