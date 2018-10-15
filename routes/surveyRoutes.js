@@ -10,7 +10,7 @@ const surveyTemplate = require('../services/emailTemplates/surveyTemplate');
 const Survey = mongoose.model('surveys');
 
 module.exports = app => {
-  app.get('/api/surveys/thanks', (req, res) => {
+  app.get('/api/surveys/:surveyId/:choice', (req, res) => {
     res.send('thanks for voting!');
   });
 
@@ -26,18 +26,33 @@ module.exports = app => {
     // so if match here does exist, that means it MUST have the surveyId and the choice
     // vid:180 I need to remove undefined elements. this 'compact' underscore does that
     // I need to remove duplicate votes. uniqby removes votes that have a dup email or surveyId
-    const events = _.chain(req.body)
-      .map(event => {
-        const match = p.test(new URL(event.url).pathname);
+    // const events = _.chain(req.body)
+    _.chain(req.body)
+      .map(({ email, url }) => {
+        const match = p.test(new URL(url).pathname);
         if (match) {
-          return { email: event.email, surveyId: match.surveyId, choice: match.choice };
+          return { email, surveyId: match.surveyId, choice: match.choice };
         }
       })
       .compact()
       .uniqBy('email', 'surveyId')
+      .each(({ surveyId, email, choice }) => {
+        Survey.updateOne({
+          _id: surveyId,
+          recipients: {
+            $elemMatch: { email: email, responded: false }
+          }
+        }, {
+          $inc: { [choice]: 1 },
+          $set: { 'recipients.$.responded': true },
+          lastResponded: new Date()
+        }).exec();
+      })
       .value() // .value is mandatory, to return the final array from your chain
 
-    console.log(events);
+    // *** IMPORTANT: this console.log(events) shows you what is being returned from sendgrid, after the user
+    // has clicked on their survey: email, surveyId, choice....that I will then be using to query the Mongo DB
+    //console.log(events);  *** the chain above was assigned to a variable called 'events'
     // sendgrid thinks the requests are failing and will keep outputting in the terminal, until you send a  response
     res.send({});
 
